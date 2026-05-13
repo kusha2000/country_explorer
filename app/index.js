@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from "react-native";
-import { fetchAllCountries, formatPopulation } from "../src/api/countriesApi";
+import { fetchAllCountries } from "../src/api/countriesApi";
 import CountryCard from "../src/components/CountryCard";
 
 export default function Page() {
