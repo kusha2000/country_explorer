@@ -1,50 +1,33 @@
-# Welcome to your Expo app 👋
+# 🌍 Country Explorer — React Native App
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+This app is a country explorer built with React Native and Expo. It fetches real country data from the REST Countries API, displays them in a beautiful searchable list, and supports both light and dark themes.
 
-## Get started
+<h3>Technologies and Dependencies Used</h3>
+<ul>
+🔹 React Native (Expo)<br>
+🔹 React Navigation (Stack Navigator)<br>
+🔹 REST Countries API — https://restcountries.com/v3.1/all<br>
+🔹 Expo Linear Gradient<br>
+🔹 Expo Vector Icons<br>
+</ul>
 
-1. Install dependencies
+<h3>Features</h3>
+<ul>
+✅ Fetch Countries: Load 250+ countries from the REST Countries API.<br>
+✅ Search Filter: Dynamically filter countries by name as you type.<br>
+✅ Region Filter: Filter countries by continent using tab buttons.<br>
+✅ Country Details: Tap any country to view flag, capital, population, languages, currencies, and more.<br>
+✅ Clean UI: Modern, responsive design with smooth animations.<br>
+✅ Error Handling: Graceful loading, error, and empty states.<br>
+</ul>
 
-   ```bash
-   npm install
-   ```
+<h2>This is the Full Demo of the project</h2>
 
-2. Start the app
+https://github.com/user-attachments/assets/8164a29e-4d13-43a5-9c12-a3ea479bf8b2
 
-   ```bash
-   npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
-
-```bash
-npm run reset-project
-```
-
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
-
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+<h2>This is the Screenshots of the system</h2>
+<img src="https://github.com/user-attachments/assets/954650aa-9a67-46d8-812b-3a29bf47518c" width="300" height="600">
+<img src="https://github.com/user-attachments/assets/fff1a786-debf-4b5e-9dbd-216adca8b697" width="300" height="600">
+<img src="https://github.com/user-attachments/assets/be8c2a0e-41ff-40c8-8762-651500846956" width="300" height="600">
+<img src="https://github.com/user-attachments/assets/8a7399ec-2f02-498c-bb5e-fa405a1fee02" width="300" height="600">
+<img src="https://github.com/user-attachments/assets/3f47ed07-77cb-487c-84a9-10170673fef2" width="300" height="600">
