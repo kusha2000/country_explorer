@@ -338,7 +338,8 @@ const styles = StyleSheet.create({
     tilesGrid: {
         flexDirection: 'row',
         flexWrap: 'wrap',
-        paddingHorizontal: Spacing.sm,
+        justifyContent: 'center',
+        alignSelf: 'center',
         marginBottom: Spacing.md,
         gap: Spacing.sm,
     },
