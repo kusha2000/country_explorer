@@ -3,6 +3,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 
 import CountryDetailScreen from '../screens/CountryDetailScreen';
 import CountryListScreen from '../screens/CountryListScreen';
+import SvgTestScreen from '../screens/SvgTestScreen';
 import { Colors } from '../theme/colors';
 
 const Stack = createStackNavigator();
@@ -29,6 +30,10 @@ const AppNavigator = () => {
                 <Stack.Screen
                     name="CountryDetail"
                     component={CountryDetailScreen}
+                />
+                <Stack.Screen
+                    name="SvgTest"
+                    component={SvgTestScreen}
                 />
             </Stack.Navigator>
         </NavigationContainer>

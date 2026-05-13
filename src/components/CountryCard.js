@@ -1,12 +1,14 @@
-import React, { useCallback } from 'react';
+import React, { useState } from 'react';
 import {
-  View,
-  Text,
+  ActivityIndicator,
   Image,
-  TouchableOpacity,
   StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
-import { Colors, Spacing, FontSize, Radius } from '../theme/colors';
+import { SvgXml } from 'react-native-svg';
+import { Colors, FontSize, Radius, Spacing } from '../theme/colors';
 
 const CountryCard = React.memo(({ country, onPress }) => {
 
@@ -19,13 +21,58 @@ const CountryCard = React.memo(({ country, onPress }) => {
   } = country;
 
   const countryName = name?.common || 'Unknown';
-  const flagUrl = flags?.png || flags?.svg;
-  const capitalCity = capital?.[0] || 'N/A'; 
+  const flagPngUrl = flags?.png;
+  const flagSvgUrl = flags?.svg;
+
+  const [svgMarkup, setSvgMarkup] = useState(null);
+  const [useSvgFallback, setUseSvgFallback] = useState(false);
+  const [loadingSvg, setLoadingSvg] = useState(false);
+
+  const capitalCity = capital?.[0] || 'N/A';
   const formattedPop = population
     ? population >= 1_000_000
       ? `${(population / 1_000_000).toFixed(1)}M`
       : `${(population / 1_000).toFixed(0)}K`
     : 'N/A';
+
+  const loadSvgFallback = async () => {
+    if (!flagSvgUrl || loadingSvg) return;
+
+    setLoadingSvg(true);
+    try {
+      const res = await fetch(flagSvgUrl, {
+        headers: {
+          Accept: 'image/svg+xml,image/*,*/*;q=0.8',
+          'User-Agent': 'Mozilla/5.0',
+        },
+      });
+
+      if (!res.ok) throw new Error(`SVG fetch failed: ${res.status}`);
+
+      let text = await res.text();
+
+      // Remove fixed SVG size
+      text = text
+        .replace(/width="[^"]*"/gi, '')
+        .replace(/height="[^"]*"/gi, '');
+
+      // Fix preserveAspectRatio
+      if (!text.includes('preserveAspectRatio')) {
+        text = text.replace(
+          '<svg',
+          '<svg preserveAspectRatio="xMidYMid meet"'
+        );
+      }
+
+      setSvgMarkup(text);
+      setUseSvgFallback(true);
+    } catch (err) {
+      console.error(`[CountryCard] SVG fallback failed for ${countryName}:`, err);
+      setUseSvgFallback(false);
+    } finally {
+      setLoadingSvg(false);
+    }
+  };
 
   return (
     <TouchableOpacity
@@ -35,12 +82,51 @@ const CountryCard = React.memo(({ country, onPress }) => {
     >
       {/* Flag Image */}
       <View style={styles.flagContainer}>
-        <Image
-          source={{ uri: flagUrl }}
-          style={styles.flag}
-          resizeMode="cover"
-          accessibilityLabel={`Flag of ${countryName}`}
-        />
+        {useSvgFallback && svgMarkup ? (
+          loadingSvg ? (
+            <ActivityIndicator size="small" color={Colors.accent} />
+          ) : (
+            <View
+              style={{
+                width: 72,
+                height: 48,
+                overflow: 'hidden',
+                backgroundColor: '#fff',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              <View
+                style={{
+                  transform: [
+                    { translateX: -10 },
+                    { translateY: -5 },
+                    { scale: 0.1 },
+                  ],
+                }}
+              >
+                <SvgXml
+                  xml={svgMarkup}
+                  width={800}
+                  height={400}
+                  preserveAspectRatio="xMidYMid meet"
+                />
+              </View>
+            </View>
+          )
+        ) : (
+          <Image
+            source={{ uri: flagPngUrl }}
+            style={styles.flag}
+            resizeMode="cover"
+            accessibilityLabel={`Flag of ${countryName}`}
+            onError={() => {
+              if (flagSvgUrl && !useSvgFallback) {
+                loadSvgFallback();
+              }
+            }}
+          />
+        )}
       </View>
 
       {/* Country Info */}
@@ -77,12 +163,12 @@ const CountryCard = React.memo(({ country, onPress }) => {
 
 const styles = StyleSheet.create({
   card: {
-    flexDirection: 'row',       // Children side by side
+    flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: Colors.primaryCard,
     borderRadius: Radius.lg,
     marginHorizontal: Spacing.md,
-    marginVertical: Spacing.xs,
+    marginVertical: Spacing.sm,
     padding: Spacing.sm,
     borderWidth: 1,
     borderColor: Colors.border,
@@ -94,7 +180,7 @@ const styles = StyleSheet.create({
   },
   flagContainer: {
     borderRadius: Radius.sm,
-    overflow: 'hidden', 
+    overflow: 'hidden',
     borderWidth: 1,
     borderColor: Colors.border,
   },
@@ -103,7 +189,7 @@ const styles = StyleSheet.create({
     height: 48,
   },
   info: {
-    flex: 1,           
+    flex: 1,
     marginLeft: Spacing.md,
   },
   countryName: {
@@ -113,7 +199,7 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   regionBadge: {
-    alignSelf: 'flex-start',  
+    alignSelf: 'flex-start',
     backgroundColor: Colors.accentGlow,
     borderRadius: Radius.full,
     paddingHorizontal: Spacing.sm,

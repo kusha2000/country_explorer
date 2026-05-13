@@ -109,12 +109,8 @@ const CountryListScreen = ({ navigation }) => {
 
                 {/* ── Header */}
                 <View style={styles.header}>
-                    <View>
-                        <Text style={styles.headerTitle}>🌍 WorldExplorer</Text>
-                        <Text style={styles.headerSubtitle}>
-                            {filteredCountries.length} countries found
-                        </Text>
-                    </View>
+                    <Text style={styles.headerEmoji}>🌍</Text>
+                    <Text style={styles.headerTitle}>Country Explorer</Text>
                 </View>
 
                 {/* Search Bar */}
@@ -149,6 +145,7 @@ const CountryListScreen = ({ navigation }) => {
                     showsHorizontalScrollIndicator={false}
                     keyExtractor={(item) => item}
                     contentContainerStyle={styles.regionList}
+                    style={styles.regionListWrapper}
                     renderItem={({ item }) => (
                         <TouchableOpacity
                             style={[
@@ -166,6 +163,10 @@ const CountryListScreen = ({ navigation }) => {
                         </TouchableOpacity>
                     )}
                 />
+
+                <Text style={styles.countriesCount}>
+                    {filteredCountries.length} countries found
+                </Text>
 
                 {/*  Country List */}
                 <Animated.View style={[styles.listContainer, { opacity: fadeAnim }]}>
@@ -209,11 +210,16 @@ const styles = StyleSheet.create({
     // Header
     header: {
         flexDirection: 'row',
-        justifyContent: 'space-between',
         alignItems: 'center',
+        justifyContent: 'center',
         paddingHorizontal: Spacing.md,
         paddingTop: Spacing.sm,
         paddingBottom: Spacing.md,
+        gap: Spacing.sm,
+    },
+    headerEmoji: {
+        fontSize: 64,
+        lineHeight: 72,
     },
     headerTitle: {
         fontSize: FontSize.xl,
@@ -225,8 +231,14 @@ const styles = StyleSheet.create({
         fontSize: FontSize.sm,
         color: Colors.textSecondary,
         marginTop: 2,
+        textAlign: 'center',
     },
-
+    countriesCount: {
+        fontSize: FontSize.sm,
+        color: Colors.textSecondary,
+        textAlign: 'center',
+        paddingBottom: Spacing.sm,
+    },
     // Search
     searchContainer: {
         flexDirection: 'row',
@@ -248,18 +260,26 @@ const styles = StyleSheet.create({
     },
 
     // Region Tabs
+    regionListWrapper: {
+        flexGrow: 0,
+        flexShrink: 0,
+        height: 60,
+    },
     regionList: {
         paddingHorizontal: Spacing.md,
-        paddingBottom: Spacing.sm,
+        paddingTop: Spacing.sm,
+        paddingBottom: Spacing.md,
         gap: Spacing.sm,
     },
     regionTab: {
         paddingHorizontal: Spacing.md,
-        paddingVertical: Spacing.xs + 2,
+        paddingVertical: 0,
+        height: 30,
         borderRadius: Radius.full,
         backgroundColor: Colors.primaryCard,
         borderWidth: 1,
         borderColor: Colors.border,
+        justifyContent: 'center',
     },
     regionTabActive: {
         backgroundColor: Colors.accent,
@@ -275,7 +295,7 @@ const styles = StyleSheet.create({
     },
 
     // List
-    listContainer: { flex: 1 },
+    listContainer: { flex: 1, marginTop: 0 },
     listContent: { paddingBottom: Spacing.xl },
 
     // States

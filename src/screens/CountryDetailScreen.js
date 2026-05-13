@@ -1,6 +1,8 @@
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useState } from 'react';
 import {
+    ActivityIndicator,
     Dimensions,
     Image,
     ScrollView,
@@ -10,6 +12,7 @@ import {
     View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { SvgXml } from 'react-native-svg';
 
 import {
     formatCurrencies,
@@ -45,6 +48,53 @@ const CountryDetailScreen = ({ route, navigation }) => {
         borders,
     } = country;
 
+    const countryName = name?.common || 'Unknown';
+    const flagPngUrl = flags?.png;
+    const flagSvgUrl = flags?.svg;
+
+    const [svgMarkup, setSvgMarkup] = useState(null);
+    const [useSvgFallback, setUseSvgFallback] = useState(false);
+    const [loadingSvg, setLoadingSvg] = useState(false);
+
+    const loadSvgFallback = async () => {
+        if (!flagSvgUrl || loadingSvg) return;
+
+        setLoadingSvg(true);
+        try {
+            const res = await fetch(flagSvgUrl, {
+                headers: {
+                    Accept: 'image/svg+xml,image/*,*/*;q=0.8',
+                    'User-Agent': 'Mozilla/5.0',
+                },
+            });
+
+            if (!res.ok) throw new Error(`SVG fetch failed: ${res.status}`);
+
+            let text = await res.text();
+
+            // Remove fixed SVG size
+            text = text
+                .replace(/width="[^"]*"/gi, '')
+                .replace(/height="[^"]*"/gi, '');
+
+            // Fix preserveAspectRatio
+            if (!text.includes('preserveAspectRatio')) {
+                text = text.replace(
+                    '<svg',
+                    '<svg preserveAspectRatio="xMidYMid meet"'
+                );
+            }
+
+            setSvgMarkup(text);
+            setUseSvgFallback(true);
+        } catch (err) {
+            console.error(`[CountryDetailScreen] SVG fallback failed for ${countryName}:`, err);
+            setUseSvgFallback(false);
+        } finally {
+            setLoadingSvg(false);
+        }
+    };
+
     return (
         <LinearGradient colors={Gradients.background} style={styles.container}>
             <SafeAreaView style={styles.safeArea}>
@@ -69,12 +119,51 @@ const CountryDetailScreen = ({ route, navigation }) => {
                 >
                     {/* Hero Flag*/}
                     <View style={styles.flagHero}>
-                        <Image
-                            source={{ uri: flags?.png || flags?.svg }}
-                            style={styles.flagImage}
-                            resizeMode="cover"
-                            accessibilityLabel={`Flag of ${name?.common}`}
-                        />
+                        {useSvgFallback && svgMarkup ? (
+                            loadingSvg ? (
+                                <ActivityIndicator size="large" color={Colors.accent} />
+                            ) : (
+                                <View
+                                    style={{
+                                        width: '100%',
+                                        height: '100%',
+                                        overflow: 'hidden',
+                                        backgroundColor: '#fff',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                    }}
+                                >
+                                    <View
+                                        style={{
+                                            transform: [
+                                                { translateX: -50 },
+                                                { translateY: -10 },
+                                                { scale: 0.5 },
+                                            ],
+                                        }}
+                                    >
+                                        <SvgXml
+                                            xml={svgMarkup}
+                                            width={800}
+                                            height={400}
+                                            preserveAspectRatio="xMidYMid meet"
+                                        />
+                                    </View>
+                                </View>
+                            )
+                        ) : (
+                            <Image
+                                source={{ uri: flagPngUrl }}
+                                style={styles.flagImage}
+                                resizeMode="cover"
+                                accessibilityLabel={`Flag of ${countryName}`}
+                                onError={() => {
+                                    if (flagSvgUrl && !useSvgFallback) {
+                                        loadSvgFallback();
+                                    }
+                                }}
+                            />
+                        )}
                         <LinearGradient
                             colors={['transparent', Colors.primary]}
                             style={styles.flagGradient}
