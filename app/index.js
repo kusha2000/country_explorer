@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from "react-native";
 import { fetchAllCountries, formatPopulation } from "../src/api/countriesApi";
+import CountryCard from "../src/components/CountryCard";
 
 export default function Page() {
     const [countries, setCountries] = useState([]);
@@ -44,9 +45,11 @@ export default function Page() {
                         <Text style={styles.subtitle}>Found {countries.length} countries</Text>
                         <ScrollView style={styles.list}>
                             {countries.slice(0, 10).map((country, index) => (
-                                <Text key={index} style={styles.item}>
-                                    {country.name.common} - {formatPopulation(country.population)}
-                                </Text>
+                                <CountryCard
+                                    key={country.cca3 || index}
+                                    country={country}
+                                    onPress={() => console.log('Pressed', country.name?.common)}
+                                />
                             ))}
                         </ScrollView>
                     </>
