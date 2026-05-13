@@ -1,7 +1,6 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
-import CountryDetailScreen from '../screens/CountryDetailScreen';
 import CountryListScreen from '../screens/CountryListScreen';
 import { Colors } from '../theme/colors';
 
@@ -19,16 +18,10 @@ const AppNavigator = () => {
                     gestureEnabled: true,
                 }}
             >
-                {/* Screen 1: The country list */}
+                {/* Screen: The country list */}
                 <Stack.Screen
                     name="CountryList"
                     component={CountryListScreen}
-                />
-
-                {/* Screen 2: Country detail view */}
-                <Stack.Screen
-                    name="CountryDetail"
-                    component={CountryDetailScreen}
                 />
             </Stack.Navigator>
         </NavigationContainer>
